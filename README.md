@@ -5,6 +5,7 @@ Solutions to different tour of go exercises.
 Navigate to a directory and
 
 ```bash
+go install
 go run .
 ```
 
