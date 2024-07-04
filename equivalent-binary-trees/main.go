@@ -21,15 +21,21 @@ func Index[T comparable](s []T, x T) int {
 // Walk walks the tree t sending all values
 // from the tree to the channel ch.
 func Walk(t *tree.Tree, ch chan int) {
-	ch <- t.Value
-
-	if t.Left != nil {
-		go Walk(t.Left, ch)
+	defer close(ch) // <- closes the channel when this function returns
+	
+	var walk func(t *tree.Tree)
+	
+	walk = func(t *tree.Tree) {
+			if t == nil {
+					return
+			}
+			
+			walk(t.Left)
+			ch <- t.Value
+			walk(t.Right)
 	}
-
-	if t.Right != nil {
-		go Walk(t.Right, ch)
-	}
+	
+	walk(t)
 }
 
 // Same determines whether the trees
